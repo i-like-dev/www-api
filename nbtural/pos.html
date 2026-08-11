@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>東森自然美 POS 系統操作指南 (2026.08 版)</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --accent: #f59e0b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 頂級現代化側邊欄 */
+        sidebar {
+            width: 300px;
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.02);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 35px 25px;
+            background: linear-gradient(135deg, #0f172a, #334155);
+            color: white;
+        }
+
+        .sidebar-header .brand-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .sidebar-menu {
+            padding: 20px 15px;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 18px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-menu li a i {
+            margin-right: 14px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+            color: #94a3b8;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-menu li a:hover, .sidebar-menu li a.active {
+            color: var(--primary-dark);
+            background-color: var(--primary-light);
+            font-weight: 600;
+        }
+
+        .sidebar-menu li a:hover i, .sidebar-menu li a.active i {
+            color: var(--primary-dark);
+        }
+
+        /* 主內容區 */
+        main {
+            margin-left: 300px;
+            flex: 1;
+            padding: 50px;
+            max-width: 1100px;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            padding: 50px;
+            border-radius: var(--radius);
+            margin-bottom: 40px;
+            box-shadow: 0 20px 35px -10px rgba(16, 185, 129, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::after {
+            content: "\f2dc";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: -20px;
+            bottom: -40px;
+            font-size: 14rem;
+            color: rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+
+        .hero-banner h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .hero-banner p {
+            font-size: 1.05rem;
+            opacity: 0.9;
+        }
+
+        /* 現代化區塊卡片 */
+        section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 40px;
+            margin-bottom: 35px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        h2.section-title {
+            color: var(--text-main);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--bg-color);
+            display: flex;
+            align-items: center;
+        }
+
+        h2.section-title i {
+            margin-right: 12px;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* 全域連續步驟編號列表 (1 到 8) */
+        .step-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .step-item {
+            position: relative;
+            padding-left: 60px;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .step-content {
+            background: var(--bg-color);
+            padding: 22px 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .step-desc {
+            color: var(--text-muted);
+            font-size: 0.98rem;
+        }
+
+        .sub-steps {
+            margin-top: 10px;
+            padding-left: 20px;
+            color: var(--text-muted);
+        }
+
+        .sub-steps li {
+            margin-bottom: 6px;
+        }
+
+        /* 精緻通知框 */
+        .notice-box {
+            background-color: #fffbeb;
+            border-left: 4px solid var(--accent);
+            padding: 18px 22px;
+            border-radius: 0 12px 12px 0;
+            margin-top: 15px;
+            color: #78350f;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .notice-box.danger {
+            background-color: #fef2f2;
+            border-left-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .notice-box i {
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        /* 網格卡片 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .card-sub {
+            background: var(--bg-color);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-sub h4 {
+            color: var(--text-main);
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        .card-sub h4 i {
+            color: var(--primary);
+        }
+
+        /* 響應式優化 */
+        @media (max-width: 992px) {
+            sidebar {
+                width: 80px;
+            }
+            sidebar .sidebar-header h1, sidebar .sidebar-header .brand-tag, sidebar .sidebar-menu span {
+                display: none;
+            }
+            sidebar .sidebar-menu li a {
+                justify-content: center;
+                padding: 15px;
+            }
+            sidebar .sidebar-menu li a i {
+                margin-right: 0;
+                font-size: 1.4rem;
+            }
+            main {
+                margin-left: 80px;
+                padding: 25px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 側邊導覽 -->
+    <sidebar>
+        <div class="sidebar-header">
+            <span class="brand-tag">EBC Natural Beauty</span>
+            <h1>POS 系統操作指南</h1>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#section-1" class="active"><i class="fas fa-play-circle"></i><span>1. 基本使用教學</span></a></li>
+            <li><a href="#section-2"><i class="fas fa-gift"></i><span>2. 手動贈品教學</span></a></li>
+            <li><a href="#section-3"><i class="fas fa-chart-line"></i><span>3. 查看本日業績</span></a></li>
+            <li><a href="#section-4"><i class="fas fa-file-invoice-dollar"></i><span>4. 帳務與對帳作業</span></a></li>
+            <li><a href="#section-5"><i class="fas fa-bookmark"></i><span>5. 掛單作業</span></a></li>
+            <li><a href="#section-6"><i class="fas fa-print"></i><span>6. 補印發票</span></a></li>
+            <li><a href="#section-7"><i class="fas fa-calendar-check"></i><span>7. 日結作業</span></a></li>
+        </ul>
+    </sidebar>
+
+    <!-- 主內容 -->
+    <main>
+        <div class="hero-banner">
+            <h2>東森自然美 POS 系統操作手冊</h2>
+            <p>標準作業規範 ｜ 版本：2026.08 版</p>
+        </div>
+
+        <!-- 1. 基本使用教學 -->
+        <section id="section-1">
+            <h2 class="section-title"><i class="fas fa-play-circle"></i>壹、基本使用教學</h2>
+            <ul class="step-list">
+                <li class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">進入系統介面</div>
+                        <div class="step-desc">點選網頁右上角的 <b>POS</b> 按鈕，即可進入POS結帳介面。</div>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">設定來賓、載具與統編</div>
+                        <div class="step-desc">
+                            點選來賓按鈕，刷讀條碼：
+                            <ul class="sub-steps">
+                                <li><b>載具：</b>如需輸入載具，在下方的載具按鈕點一下並刷讀載具條碼。</li>
+                                <li><b>統一編號：</b>若需打統編，點一下統一編號按鈕，用筆電鍵盤或網頁虛擬鍵盤輸入統一編號（共 8 字元）。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">選擇結帳與付款方式</div>
+                        <div class="step-desc">點選結帳按鈕，選擇對應結帳方式：</div>
+                        <div class="grid-2" style="margin-top: 15px;">
+                            <div class="card-sub">
+                                <h4><i class="fas fa-money-bill-wave"></i> 現金結帳</h4>
+                                <p class="step-desc">輸入收款金額，系統自動計算找零金額，並依系統顯示金額找零。</p>
+                            </div>
+                            <div class="card-sub">
+                                <h4><i class="fas fa-credit-card"></i> 信用卡（手動）</h4>
+                                <p class="step-desc">信用卡機按確認鍵（充電時需按，非充電免），輸入金額後按確認。確認金額正確後讓顧客刷卡（錯誤按取消重輸）。</p>
+                            </div>
+                        </div>
+                        <div class="notice-box" style="margin-top: 15px;">
+                            <i class="fas fa-info-circle"></i>
+                            <div><b>簽單與發票發行：</b>第一張簽單（特店聯）由後至前撕掉並按確認；第二張（顧客聯）交給顧客。超過 3000 元需請顧客簽名（免簽名則免）。發票機會列印出發票及明細交給顧客。</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 2. 手贈教學 -->
+        <section id="section-2">
+            <h2 class="section-title"><i class="fas fa-gift"></i>貳、手贈教學</h2>
+            <ul class="step-list">
+                <li class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">手動贈品刷讀作業</div>
+                        <div class="step-desc">
+                            在輸入條碼欄位下方點選 <b>贈品</b> 按鈕，然後刷讀贈品的國際條碼（或贈品單條碼）。
+                        </div>
+                        <div class="notice-box danger" style="margin-top: 12px;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div><b>注意：</b>每次刷讀贈品條碼前，務必確認是否有按到贈品按鈕，以防庫存發生錯誤。</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 3. 查看本日業績 -->
+        <section id="section-3">
+            <h2 class="section-title"><i class="fas fa-chart-line"></i>參、查看本日業績</h2>
+            <ul class="step-list">
+                <li class="step-item">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <div class="step-title">查詢營業額報表</div>
+                        <div class="step-desc">
+                            再次點選右上角 <b>POS</b> 按鈕返回主畫面。點選報表資料夾，進入 <b>銷/退貨明細表</b> 子資料夾。選擇當日日期（起訖時間確認皆為當天日期），下方即會顯示今日業績。
+                        </div>
+                        <div class="notice-box" style="margin-top: 12px;">
+                            <i class="fas fa-lightbulb"></i>
+                            <div><b>提示：</b>若系統尚未處理銷退單，計算時需手動扣掉退貨金額。</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 4. 帳務核對 -->
+        <section id="section-4">
+            <h2 class="section-title"><i class="fas fa-file-invoice-dollar"></i>肆、帳務與對帳作業</h2>
+            <ul class="step-list">
+                <li class="step-item">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <div class="step-title">信用卡機對帳與簽單核對</div>
+                        <div class="step-desc">
+                            <ul class="sub-steps" style="padding-left: 0; list-style: none;">
+                                <li style="margin-bottom: 10px;"><b>【4-A. 對信用卡機帳】</b> 點選右上角POS返回主畫面 ➔ 報表資料夾 ➔ 銷/退貨明細表 ➔ 選擇當日日期 ➔ 按進階查詢選擇「信用卡（手動）」記住金額。信用卡機按確認鍵後點選主畫面各式信用卡符號進入後台，點選結帳查看金額是否對得上。</li>
+                                <li><b>【4-B. 對簽單金額】</b> 加總所有實體簽單總金額，核對系統銷/退貨明細表（信用卡手動篩選）金額是否相符。</li>
+                            </ul>
+                        </div>
+                        <div class="notice-box" style="margin-top: 12px;">
+                            <i class="fas fa-shield-alt"></i>
+                            <div><b>銷退單注意事項：</b>對帳前請先點選銷售管理的「銷退單」按鈕，篩選日期與付款方式（進階查詢），確認右側無藍色處理按鈕代表皆已處理完成。</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 5. 掛單 -->
+        <section id="section-5">
+            <h2 class="section-title"><i class="fas fa-bookmark"></i>伍、掛單作業</h2>
+            <ul class="step-list">
+                <li class="step-item">
+                    <div class="step-number">7</div>
+                    <div class="step-content">
+                        <div class="step-title">購物車暫存與取回</div>
+                        <div class="step-desc">購物車加入產品後，點選 POS 右下角的 <b>掛單</b> 按鈕選擇暫存欄位。若需取回，點選 <b>取回</b> 按鈕即可自動帶入訂單資訊。</div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 6. 補印發票 -->
+        <section id="section-6">
+            <h2 class="section-title"><i class="fas fa-print"></i>陸、補印發票</h2>
+            <ul class="step-list">
+                <li class="step-item">
+                    <div class="step-number">8</div>
+                    <div class="step-content">
+                        <div class="step-title">異常補印發票作業</div>
+                        <div class="step-desc">點選銷售管理的「銷售訂單」，選取該筆訂單後點選上方 <b>列印</b> 按鈕即可重新列印。</div>
+                        <div class="notice-box danger" style="margin-top: 12px;">
+                            <i class="fas fa-ban"></i>
+                            <div><b>規定注意：</b>此操作僅適用於卡紙或系統未列印單據，無異常狀況下嚴禁重複列印發票。</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 7. 日結 -->
+        <section id="section-7">
+            <h2 class="section-title"><i class="fas fa-calendar-check"></i>柒、日結作業</h2>
+            <div class="notice-box" style="margin-bottom: 20px;">
+                <i class="fas fa-user-shield"></i>
+                <div><b>授權提醒：</b>此操作需經當日值班主管核准方可進行。</div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card-sub">
+                    <h4><i class="fas fa-desktop"></i> POS 機填寫日結單</h4>
+                    <p class="step-desc">點選 POS 頁面左下角 <b>日結</b> 按鈕 ➔ 新增 ➔ 選擇今天日期 ➔ 確認金額正確後處理並確認日結單。若主管要求，請配合回報業績。</p>
+                </div>
+                <div class="card-sub">
+                    <h4><i class="fas fa-calculator"></i> 信用卡機結帳</h4>
+                    <p class="step-desc">螢幕顯示充電中時按確認 ➔ 點選螢幕任意處 ➔ 按 <b>8</b> ➔ 核對金額是否與日結單相同（不符請回報主管） ➔ 按 <b>0</b> 列印單據。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 側邊欄滾動監控高亮
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar-menu a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 80) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
