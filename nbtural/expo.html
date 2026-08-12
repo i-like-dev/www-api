@@ -108,12 +108,27 @@
             font-size: 12pt;
         }
     </style>
-    <!-- START Formbricks Surveys -->
+    <!-- START Formbricks Surveys with Error Handling -->
     <script type="text/javascript">
     !function(){
         var appUrl = "https://forms.techmeow.tw";
         var workspaceId = "cmqhccne500049kunluchvy33";
-        var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.src=appUrl+"/js/formbricks.umd.cjs";var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e),setTimeout(function(){window.formbricks.setup({workspaceId: workspaceId, appUrl: appUrl})},500)}();
+        try {
+            var t = document.createElement("script");
+            t.type = "text/javascript";
+            t.async = true;
+            t.src = appUrl + "/js/formbricks.umd.cjs";
+            var e = document.getElementsByTagName("script")[0];
+            e.parentNode.insertBefore(t, e);
+            t.onload = function() {
+                if (window.formbricks) {
+                    window.formbricks.setup({ workspaceId: workspaceId, appUrl: appUrl });
+                }
+            };
+        } catch (err) {
+            console.error("Formbricks init error:", err);
+        }
+    }();
     </script>
     <!-- END Formbricks Surveys -->
 </head>
@@ -131,8 +146,7 @@
             <p class="prize-desc">8/19 將抽出一名幸運得主</p>
         </div>
 
-        <!-- 這裡呼叫 Formbricks 追蹤程式碼與彈出問卷 -->
-        <button class="btn-open" onclick="trackAndOpenSurvey()">立即填寫問卷</button>
+        <button class="btn-open" onclick="triggerSurvey()">立即填寫問卷</button>
 
         <div class="rules-box">
             <div class="rules-title">📌 活動與抽獎說明：</div>
@@ -143,15 +157,19 @@
     </div>
 
     <script>
-        function trackAndOpenSurvey() {
-            // 如果您在 Formbricks 設定了程式碼操作（例如金鑰為 click_survey），可以這樣追蹤：
-            if (window.formbricks) {
-                window.formbricks.track("click_survey");
-                // 同時直接叫出問卷
-                if (typeof window.formbricks.showSurvey === 'function') {
-                    window.formbricks.showSurvey('cmsolif2900046sunfwxoreth');
+        function triggerSurvey() {
+            try {
+                if (window.formbricks && typeof window.formbricks.track === 'function') {
+                    window.formbricks.track("click_survey");
                 }
-            } else {
+                if (window.formbricks && typeof window.formbricks.showSurvey === 'function') {
+                    window.formbricks.showSurvey('cmsolif2900046sunfwxoreth');
+                } else {
+                    // Fallback to direct link if SDK fails or throws error
+                    window.open('https://techmeow.tw/TucgKR5x', '_blank');
+                }
+            } catch (e) {
+                console.error("Survey trigger error:", e);
                 window.open('https://techmeow.tw/TucgKR5x', '_blank');
             }
         }
