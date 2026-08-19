@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -107,46 +109,105 @@
             margin-bottom: 6px;
             font-size: 12pt;
         }
-    </style>
-    <!-- START Formbricks Surveys with Error Handling -->
-    <script type="text/javascript">
-    !function(){
-        var appUrl = "https://forms.techmeow.tw";
-        var workspaceId = "cmqhccne500049kunluchvy33";
-        try {
-            var t = document.createElement("script");
-            t.type = "text/javascript";
-            t.async = true;
-            t.src = appUrl + "/js/formbricks.umd.cjs";
-            var e = document.getElementsByTagName("script")[0];
-            e.parentNode.insertBefore(t, e);
-            t.onload = function() {
-                if (window.formbricks) {
-                    window.formbricks.setup({ workspaceId: workspaceId, appUrl: appUrl });
-                }
-            };
-        } catch (err) {
-            console.error("Formbricks init error:", err);
+
+        /* 網頁內動畫彈出對話框 (Animated Popup Dialog) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-    }();
-    </script>
-    <!-- END Formbricks Surveys -->
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            padding: 35px 30px;
+        }
+        .modal-overlay.active .modal-container {
+            transform: scale(1) translateY(0);
+        }
+        .modal-icon {
+            font-size: 45pt;
+            margin-bottom: 15px;
+        }
+        .modal-title {
+            font-size: 20pt;
+            font-weight: bold;
+            color: #008080;
+            margin-bottom: 10px;
+        }
+        .modal-desc {
+            font-size: 13pt;
+            color: #555555;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .modal-btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .btn-confirm {
+            background-color: #008080;
+            color: white;
+            font-size: 14pt;
+            font-weight: bold;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,128,128,0.3);
+            flex: 1;
+        }
+        .btn-cancel {
+            background-color: #e0e0e0;
+            color: #333333;
+            font-size: 14pt;
+            font-weight: bold;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="logo">
             <img src="http://docs.techmeow.tw/image.png" alt="東森自然美 Logo">
         </div>
-        <div class="company-tag">#NBlife</div>
+        <div class="company-tag">東森自然美</div>
         <h1>2026 美容展餐食滿意度調查</h1>
         <div class="subtitle">我們正在調查同仁對於 2026 美容展的餐食滿意度，誠摯邀請您填寫！</div>
         
         <div class="prize-banner">
-            <p class="prize-title">🎁 填問卷抽大獎：1000 枚東森幣！</p>
+            <p class="prize-title">🎁 填問卷抽大獎：獨得 1000 枚東森幣！</p>
             <p class="prize-desc">8/19 將抽出一名幸運得主</p>
         </div>
 
-        <button class="btn-open" onclick="triggerSurvey()">立即填寫問卷</button>
+        <button class="btn-open" onclick="openModal()">立即填寫問卷</button>
 
         <div class="rules-box">
             <div class="rules-title">📌 活動與抽獎說明：</div>
@@ -156,21 +217,32 @@
         </div>
     </div>
 
+    <!-- 網頁內動畫彈出對話框 Modal -->
+    <div class="modal-overlay" id="surveyModal">
+        <div class="modal-container">
+            <div class="modal-icon">✨</div>
+            <div class="modal-title">準備填寫問卷</div>
+            <div class="modal-desc">即將前往「2026 美容展餐食滿意度調查」，完成填寫即可參與 1000 枚東森幣抽獎！</div>
+            <div class="modal-btn-group">
+                <button class="btn-cancel" onclick="closeModal()">取消</button>
+                <a href="https://script.google.com/macros/s/AKfycbzSAtUNRXnc6uEpcv2NDLDSE0TjNnm4N_j_KT42hJSRbh52lozjPlXTNdhprLzD3y9ybw/exec?action=share&token=21453edffd884084a78c1c5fb5f7ca61" target="_blank" class="btn-confirm" onclick="closeModal()">前往填寫</a>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function triggerSurvey() {
-            try {
-                if (window.formbricks && typeof window.formbricks.track === 'function') {
-                    window.formbricks.track("click_survey");
-                }
-                if (window.formbricks && typeof window.formbricks.showSurvey === 'function') {
-                    window.formbricks.showSurvey('cmsolif2900046sunfwxoreth');
-                } else {
-                    // Fallback to direct link if SDK fails or throws error
-                    window.open('https://techmeow.tw/TucgKR5x', '_blank');
-                }
-            } catch (e) {
-                console.error("Survey trigger error:", e);
-                window.open('https://techmeow.tw/TucgKR5x', '_blank');
+        function openModal() {
+            var modal = document.getElementById('surveyModal');
+            modal.classList.add('active');
+        }
+        function closeModal() {
+            var modal = document.getElementById('surveyModal');
+            modal.classList.remove('active');
+        }
+        window.onclick = function(event) {
+            var modal = document.getElementById('surveyModal');
+            if (event.target == modal) {
+                closeModal();
             }
         }
     </script>
